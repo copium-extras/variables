@@ -4,14 +4,6 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    // This builds SDL as a static library, which is the default and correct way.
-    const sdl_dep = b.dependency("sdl", .{
-        .target = target,
-        .optimize = optimize,
-    });
-    const sdl_lib_artifact = sdl_dep.artifact("SDL3");
-    const sdl_include_path = sdl_dep.path("include");
-
     const dll_module = b.createModule(.{
         .root_source_file = b.path("src/root.zig"),
         .target = target,
@@ -23,9 +15,6 @@ pub fn build(b: *std.Build) void {
         .root_module = dll_module,
         .linkage = .dynamic,
     });
-
-    my_dll.addIncludePath(sdl_include_path);
-    my_dll.linkLibrary(sdl_lib_artifact);
 
     // --- THE CORRECTED AND COMPLETE LIST OF SYSTEM LIBRARIES ---
     if (target.result.os.tag == .windows) {
@@ -48,8 +37,6 @@ pub fn build(b: *std.Build) void {
     const lib_unit_tests = b.addTest(.{
         .root_module = dll_module,
     });
-    lib_unit_tests.addIncludePath(sdl_include_path);
-    lib_unit_tests.linkLibrary(sdl_lib_artifact);
 
     if (target.result.os.tag == .windows) {
         // Also add the necessary libs for testing

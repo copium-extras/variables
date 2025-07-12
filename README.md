@@ -1,2 +1,2 @@
-# sdl3
-sdl3 binary for use with copium
+# template
+template binary for use with copium
